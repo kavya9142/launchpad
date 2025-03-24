@@ -1,3 +1,11 @@
+<?php
+    require "db_connect.php" ;
+
+if (isset($_GET['success'])) {
+    echo "<p class='success-message'>Record " . htmlspecialchars($_GET['success']) . " successfully!</p>";
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,8 +19,7 @@
         <nav>
             <h1>Library Management System</h1>
             <ul>
-                <li><a href="#">Buy Book</a></li>
-                <li><a href="#">Add Book</a></li>
+            <li><a href="add_book.php" target="_blank">Add Book</a></li>
                 <li><a href="#">Library</a></li>
                 <li><a href="#">About</a></li>
             </ul>
@@ -26,12 +33,29 @@
     
     <main>
         <section class="book-list">
-            <div class="book">
-                <img src="images/img1.jpg" alt="Book Image">
-                <h3>The Silent Patient</h3>
-                <p>Alex Michaelides</p>
-            </div>
-            <div class="book">
+            <?php
+           $search = isset($_GET['search']) ? mysqli_real_escape_string($conn, $_GET['search']) : '';
+           $query = "SELECT * FROM library_details WHERE book_name LIKE '%$search%' OR author_name LIKE '%$search%'";
+           $result = mysqli_query($conn, $query);
+           
+
+            while ($book = mysqli_fetch_assoc($result)) { 
+            ?>
+           
+           <div class="book">
+    <a href="book_details.php?id=<?php echo $book['id']; ?>">
+        <img src="<?php echo $book['images']; ?>" alt="Book Image">
+        <h3><?php echo $book['book_name']; ?></h3>
+        <p><?php echo $book['author_name']; ?></p>
+    </a>
+</div> 
+
+
+
+            <?php
+            }
+            ?>
+            <!-- <div class="book">
                 <img src="images/img2.jpg" alt="Book Image">
                 <h3>Where the Crawdads Sing </h3>
                 <p>Delia Owens</p>
@@ -50,7 +74,8 @@
                 <img src="images/img5.jpg" alt="Book Image">
                 <h3>The Alchemist </h3>
                 <p>Paulo Coelho</p>
-            </div>
+            </div> -->
+            <link rel= "bookdetail" href = "book_details.php">
         </section>
     </main>
     
